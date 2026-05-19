@@ -1,10 +1,7 @@
 // lib/ai-scoring.ts — Varsity Visa AI Lead Scoring Engine
 
-import OpenAI from 'openai'
 import type { Lead, ScoreBreakdown } from '@/types'
 import { destinationLabel } from '@/lib/constants'
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 // ============================================================
 // RULE-BASED PRE-SCORE (fast, no API call)
@@ -147,6 +144,9 @@ Return ONLY a JSON object (no markdown, no explanation outside JSON):
 }`
 
   try {
+    const { default: OpenAI } = await import('openai')
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],

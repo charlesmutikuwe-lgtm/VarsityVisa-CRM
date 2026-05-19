@@ -1,6 +1,6 @@
 // app/api/leads/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import { ruleBasedScore } from '@/lib/ai-scoring'
 import type { StudyMatchFormData } from '@/types'
 

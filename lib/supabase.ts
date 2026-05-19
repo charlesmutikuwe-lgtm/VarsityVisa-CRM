@@ -1,21 +1,9 @@
 // lib/supabase.ts
-import { createClientComponentClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Lead, Note, Activity, AdminUser, DashboardStats } from '@/types'
 
 // ── Client-side (use in components) ──────────────────────────
 export const supabase = createClientComponentClient()
-
-// ── Server-side (use in Server Components / Route Handlers) ──
-export const getServerSupabase = () =>
-  createServerComponentClient({ cookies })
-
-// ── Admin client (bypasses RLS — server only) ─────────────────
-export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 // ============================================================
 // LEADS

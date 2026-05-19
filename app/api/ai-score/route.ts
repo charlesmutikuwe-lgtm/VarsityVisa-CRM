@@ -1,6 +1,6 @@
 // app/api/ai-score/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 import { aiScoreLead } from '@/lib/ai-scoring'
 
 export async function POST(req: NextRequest) {
