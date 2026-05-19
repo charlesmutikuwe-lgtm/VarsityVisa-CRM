@@ -1,0 +1,233 @@
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand Colors */
+  --brand-primary: #6c63ff;
+  --brand-accent: #00e5ff;
+  --brand-gold: #fbbf24;
+  --brand-success: #10b981;
+  --brand-danger: #ef4444;
+  --brand-warning: #f97316;
+
+  /* Surfaces */
+  --surface-0: #0a0a0f;
+  --surface-1: #12121a;
+  --surface-2: #1a1a2e;
+  --surface-3: #232340;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+
+  /* Lead Status Colors */
+  --status-new: #6c63ff;
+  --status-contacted: #3b82f6;
+  --status-qualified: #8b5cf6;
+  --status-application: #f97316;
+  --status-documents: #eab308;
+  --status-visa-applied: #06b6d4;
+  --status-visa-approved: #10b981;
+  --status-enrolled: #22c55e;
+  --status-lost: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sora), system-ui, sans-serif;
+  background-color: var(--surface-0);
+  color: var(--text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface-1); }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+/* Card base */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* Stat card */
+.stat-card {
+  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(108, 99, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Score badge */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-mono), monospace;
+}
+
+/* Pipeline column */
+.pipeline-col {
+  min-width: 260px;
+  max-width: 280px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 16px;
+  height: fit-content;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+/* Lead card in pipeline */
+.lead-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lead-card:hover {
+  border-color: var(--brand-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.15);
+}
+
+/* Input base */
+.input-base {
+  background: var(--surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+.input-base:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+.input-base::placeholder { color: var(--text-muted); }
+
+/* Button variants */
+.btn-primary {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: #5a52e0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.35);
+}
+
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-3);
+}
+
+.btn-whatsapp {
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-whatsapp:hover { background: #20b858; }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(108, 99, 255, 0); }
+}
+
+.animate-fade-in { animation: fadeInUp 0.3s ease forwards; }
+.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+
+/* Status indicator dots */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
