@@ -149,7 +149,7 @@ async function sendViaMeta(to: string, message: string) {
 }
 
 // ── Message Templates ──────────────────────────────────────────
-export const WHATSAPP_TEMPLATES = {
+const WHATSAPP_TEMPLATES = {
   welcome: (name: string) =>
     `Hi ${name}! 👋 Thank you for your interest in studying abroad with Varsity Visa. We've received your details and a consultant will contact you within 24 hours. Reply STOP to opt out.`,
 
