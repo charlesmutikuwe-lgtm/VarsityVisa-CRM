@@ -71,8 +71,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to create lead' }, { status: 500 })
     }
 
-    // Trigger async AI scoring (fire and forget)
-    triggerAIScore(lead.id).catch(console.error)
+    // Rule-based score is stored immediately. Paid API scoring is intentionally disabled.
 
     return NextResponse.json({ success: true, lead_id: lead.id, score: scoreBreakdown.total }, { status: 201 })
   } catch (err) {
@@ -105,14 +104,4 @@ export async function GET(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ leads: data })
-}
-
-// Trigger full AI score in background
-async function triggerAIScore(leadId: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  await fetch(`${baseUrl}/api/ai-score`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY || '' },
-    body: JSON.stringify({ lead_id: leadId }),
-  })
 }

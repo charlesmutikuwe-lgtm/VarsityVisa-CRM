@@ -1,7 +1,6 @@
 // lib/ai-scoring.ts — Varsity Visa AI Lead Scoring Engine
 
 import type { Lead, ScoreBreakdown } from '@/types'
-import { destinationLabel } from '@/lib/constants'
 
 // ============================================================
 // RULE-BASED PRE-SCORE (fast, no API call)
@@ -96,7 +95,7 @@ function generateRuleReasoning(breakdown: Omit<ScoreBreakdown, 'total' | 'reason
 }
 
 // ============================================================
-// AI SCORING (calls GPT-4o for deep analysis)
+// SCORING WRAPPER — rule-based only, no paid API required
 // ============================================================
 
 export async function aiScoreLead(lead: Lead): Promise<{
@@ -105,98 +104,15 @@ export async function aiScoreLead(lead: Lead): Promise<{
   summary: string
 }> {
   const ruleScore = ruleBasedScore(lead)
-
-  const prompt = `You are an expert student visa consultant for Varsity Visa, a Zimbabwean consultancy specializing in international study placements.
-
-Analyze this student lead and provide a lead quality score from 0–100.
-
-## Lead Data:
-- Name: ${lead.full_name}
-- City: ${lead.city}, ${lead.country}
-- Destination: ${destinationLabel(lead.desired_destination)}
-- Study Level: ${lead.study_level}
-- Field: ${lead.field_of_study}
-- Start Date: ${lead.intended_start_date || 'Not specified'}
-- Budget: ${formatBudget(lead.budget_range)}
-- Source: ${lead.source}
-- Documents: Passport=${lead.passport_uploaded}, Transcripts=${lead.transcripts_uploaded}, English Test=${lead.english_test_uploaded}, Financial=${lead.financial_docs_uploaded}
-- WhatsApp Opt-in: ${lead.whatsapp_opt_in}
-- Rule-based pre-score: ${ruleScore.total}/100
-
-## Context:
-- Varsity Visa frequently places Zimbabwean students into Poland, Lithuania, Dubai/UAE, Malaysia, India, Romania, Hungary, Turkey and Georgia, plus premium destinations such as the UK, Canada, Australia and USA.
-- Common barriers: passport delays, document legalization, financial proof, visa refusals, limited budgets, delayed agent-fee payments and unrealistic scholarship expectations.
-- Low-budget leads can still be viable for India, Malaysia, Poland, Lithuania, Romania, Turkey, Georgia and selected Dubai/UAE scholarship routes.
-- Referral leads and WhatsApp opt-ins usually convert faster than cold website leads.
-- Students starting within 3–6 months are urgent, but may need strong document readiness to remain viable.
-
-## Your Task:
-Return ONLY a JSON object (no markdown, no explanation outside JSON):
-{
-  "score": <0–100 integer>,
-  "budget_fit": <0–25>,
-  "timeline_urgency": <0–25>,
-  "document_readiness": <0–25>,
-  "engagement_level": <0–25>,
-  "summary": "<2–3 sentence consultant's assessment of this lead>",
-  "recommended_action": "<specific next step for the agent>",
-  "risk_flags": ["<any concerns>"]
-}`
-
-  try {
-    const { default: OpenAI } = await import('openai')
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.3,
-      max_tokens: 400,
-    })
-
-    const raw = response.choices[0].message.content || '{}'
-    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim())
-
-    const breakdown: ScoreBreakdown = {
-      budget_fit: parsed.budget_fit ?? ruleScore.budget_fit,
-      timeline_urgency: parsed.timeline_urgency ?? ruleScore.timeline_urgency,
-      document_readiness: parsed.document_readiness ?? ruleScore.document_readiness,
-      engagement_level: parsed.engagement_level ?? ruleScore.engagement_level,
-      total: parsed.score ?? ruleScore.total,
-      reasoning: parsed.recommended_action || ruleScore.reasoning,
-    }
-
-    return {
-      score: Math.min(100, Math.max(0, parsed.score ?? ruleScore.total)),
-      breakdown,
-      summary: parsed.summary || `Lead scored ${ruleScore.total}/100 via rule-based analysis.`,
-    }
-  } catch (err) {
-    console.error('AI scoring failed, falling back to rule-based:', err)
-    return {
-      score: ruleScore.total,
-      breakdown: ruleScore,
-      summary: `Scored ${ruleScore.total}/100. ${ruleScore.reasoning}`,
-    }
+  return {
+    score: ruleScore.total,
+    breakdown: ruleScore,
+    summary: `Scored ${ruleScore.total}/100 using Varsity Visa rule-based qualification. ${ruleScore.reasoning}`,
   }
 }
 
-// ============================================================
-// BATCH SCORING (for unscored leads)
-// ============================================================
-
 export async function batchScoreLeads(leads: Lead[]): Promise<void> {
-  // Process in batches of 5 to avoid rate limits
-  const batchSize = 5
-  for (let i = 0; i < leads.length; i += batchSize) {
-    const batch = leads.slice(i, i + batchSize)
-    await Promise.allSettled(
-      batch.map(lead => aiScoreLead(lead))
-    )
-    if (i + batchSize < leads.length) {
-      await new Promise(r => setTimeout(r, 1000)) // 1s delay between batches
-    }
-  }
+  await Promise.all(leads.map(lead => aiScoreLead(lead)))
 }
 
 // ============================================================
@@ -227,18 +143,4 @@ function getMonthsUntil(dateStr: string): number {
   const target = new Date(dateStr)
   const now = new Date()
   return Math.max(0, (target.getFullYear() - now.getFullYear()) * 12 + (target.getMonth() - now.getMonth()))
-}
-
-function formatBudget(budget: string | undefined): string {
-  const labels: Record<string, string> = {
-    under_2k: 'Under $2,000/yr',
-    '2k_5k': '$2,000–$5,000/yr',
-    under_5k: 'Under $5,000/yr',
-    '5k_10k': '$5,000–$10,000/yr',
-    '10k_20k': '$10,000–$20,000/yr',
-    '20k_30k': '$20,000–$30,000/yr',
-    over_30k: 'Over $30,000/yr',
-    scholarship_only: 'Scholarship Only',
-  }
-  return labels[budget || ''] || 'Not specified'
 }

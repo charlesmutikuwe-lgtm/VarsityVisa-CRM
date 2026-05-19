@@ -1,21 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
-import { Sora, DM_Mono } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
-
-const sora = Sora({
-  subsets: ['latin'],
-  variable: '--font-sora',
-  display: 'swap',
-})
-
-const dmMono = DM_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: 'Varsity Visa CRM',
@@ -25,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sora.variable} ${dmMono.variable}`}>
+    <html lang="en">
       <body className="bg-[#0a0a0f] text-white antialiased">
         <Toaster
           position="top-right"

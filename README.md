@@ -13,7 +13,7 @@ A full-stack student pipeline and lead management system built with **Next.js 14
 | 📊 Admin Dashboard with Charts | ✅ Built |
 | 🗃️ Leads Table with Search/Filter | ✅ Built |
 | 🔁 Kanban Pipeline (Drag & Drop) | ✅ Built |
-| 🤖 AI Lead Scoring (GPT-4o) | ✅ Built |
+| 🤖 Rule-Based Lead Scoring | ✅ Built — no paid AI API required |
 | 📱 WhatsApp Integration | ✅ Placeholder (Twilio/Meta ready) |
 | 📄 Document Tracking | ✅ Built |
 | 📝 Activity Log & Notes | ✅ Built |
@@ -53,7 +53,6 @@ Fill in your values:
 - `NEXT_PUBLIC_SUPABASE_URL` — your Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — your Supabase anon key
 - `SUPABASE_SERVICE_ROLE_KEY` — your service role key (server only)
-- `OPENAI_API_KEY` — from [platform.openai.com](https://platform.openai.com)
 - `INTERNAL_API_KEY` — any random string (e.g. `openssl rand -hex 32`)
 
 ### 5. Create Admin User
@@ -92,7 +91,7 @@ varsity-visa-crm/
 │   │   └── students/               ← Enrolled students view
 │   ├── api/
 │   │   ├── leads/route.ts          ← Lead CRUD + rule scoring
-│   │   ├── ai-score/route.ts       ← GPT-4o deep scoring
+│   │   ├── ai-score/route.ts       ← rule-based scoring endpoint
 │   │   └── whatsapp/route.ts       ← WhatsApp messaging
 │   └── globals.css                 ← Design system
 ├── lib/
@@ -116,7 +115,7 @@ Leads are scored on 4 dimensions (0–25 each = 100 total):
 | **Engagement Level** | WhatsApp opt-in, source quality, contact history |
 
 On form submit: **instant rule-based score** (no API delay).  
-In background: **GPT-4o deep analysis** with consultant reasoning.
+No paid API is required. The current version uses fast **rule-based scoring** with consultant-style reasoning.
 
 ---
 

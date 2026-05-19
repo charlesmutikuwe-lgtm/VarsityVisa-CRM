@@ -52,7 +52,7 @@ export default function DashboardPage() {
           icon={<Users size={20} />}
           label="Total Leads"
           value={stats.total_leads.toLocaleString()}
-          sub="+{stats.new_this_week} this week"
+          sub={`+${stats.new_this_week} this week`}
           color="#6c63ff"
         />
         <StatCard

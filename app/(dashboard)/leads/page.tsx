@@ -1,10 +1,10 @@
 'use client'
 // app/(dashboard)/leads/page.tsx
-import { useEffect, useState, useCallback } from 'react'
+import { Suspense, useEffect, useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getLeads, updateLeadStatus } from '@/lib/supabase'
-import { getScoreColor, getScoreLabel } from '@/lib/ai-scoring'
-import { Search, Filter, Download, RefreshCw, MessageSquare, ChevronUp, ChevronDown } from 'lucide-react'
+import { getScoreColor } from '@/lib/ai-scoring'
+import { Search, Download, RefreshCw, MessageSquare, ChevronUp, ChevronDown } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { Lead, LeadStatus } from '@/types'
 import { PIPELINE_STAGES, STATUS_COLORS, DESTINATION_FLAGS } from '@/lib/constants'
@@ -14,7 +14,7 @@ const STATUSES: { value: LeadStatus | 'all', label: string }[] = [
   { value: 'all', label: 'All Leads' },
   ...PIPELINE_STAGES.map(stage => ({ value: stage.status, label: stage.label })),
 ]
-export default function LeadsPage() {
+function LeadsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -257,5 +257,13 @@ export default function LeadsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function LeadsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64 text-sm" style={{ color: 'var(--text-muted)' }}>Loading leads…</div>}>
+      <LeadsPageContent />
+    </Suspense>
   )
 }
